@@ -16,7 +16,7 @@ public class AbilityManager : MonoBehaviour
     {
         inputDevice = InputManager.ActiveDevice;
 
-        if(inputDevice.RightTrigger.WasPressed && Aim.isAiming && !Movement.moving)
+        if(inputDevice.RightTrigger.WasPressed && Aim.isAiming)
         {
             if(basicAbility.readyToFire)
             basicAbility.FireAbility();
