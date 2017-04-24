@@ -5,7 +5,7 @@ using InControl;
 
 public class AbilityManager : MonoBehaviour
 {
-    [Tooltip("RightTrigger, No Cooldown, ResourceGainer")]
+    [Tooltip("RightTrigger, Short Cooldown, ResourceGainer")]
     public Ability basicAbility;
     [Space, Tooltip("X on the Playstation Controller, A on the Xbox Controller")]
     public Ability ability1;

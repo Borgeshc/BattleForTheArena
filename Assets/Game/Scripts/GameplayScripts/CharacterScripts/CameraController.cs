@@ -27,10 +27,12 @@ public class CameraController : MonoBehaviour
     Vector3 position;
     Quaternion rotation;
     GameObject player;
+    Animator anim;
 
     public void Start()
     {
         player = GameObject.Find("Player");
+        anim = player.GetComponent<Animator>();
         Vector3 angles = transform.eulerAngles;
         x = angles.y;
         y = angles.x;
@@ -42,6 +44,16 @@ public class CameraController : MonoBehaviour
 
         horizontal = inputDevice.RightStick.X;
         vertical = inputDevice.RightStick.Y;
+        
+        if(horizontal != 0 && !Movement.moving)
+        {
+            anim.SetLayerWeight(3, 1);
+            anim.SetFloat("Horizontal2", horizontal);
+        }
+        else
+        {
+            anim.SetLayerWeight(3, 0);
+        }
 
         if (target)
         {
@@ -49,12 +61,6 @@ public class CameraController : MonoBehaviour
             y += -vertical * ySpeed * 0.02f;
 
             y = ClampAngle(y, yMinLimit, yMaxLimit);
-
-            //distance = new Vector3(distance.x - inputDevice.LeftTrigger * zoomSpd * 0.02f, distance.y - inputDevice.LeftTrigger * zoomSpd * 0.02f, distance.z - inputDevice.LeftTrigger * zoomSpd * 0.02f);
-            //distance = new Vector3(distance.x + inputDevice.LeftTrigger * zoomSpd * 0.02f, distance.y + inputDevice.LeftTrigger * zoomSpd * 0.02f, distance.z + inputDevice.LeftTrigger * zoomSpd * 0.02f);
-
-            //zoomedDistance = new Vector3(zoomedDistance.x - inputDevice.LeftTrigger * zoomSpd * 0.02f, zoomedDistance.y - inputDevice.LeftTrigger * zoomSpd * 0.02f, zoomedDistance.z - inputDevice.LeftTrigger * zoomSpd * 0.02f);
-           // zoomedDistance = new Vector3(zoomedDistance.x + inputDevice.LeftTrigger * zoomSpd * 0.02f, zoomedDistance.y + inputDevice.LeftTrigger * zoomSpd * 0.02f, zoomedDistance.z + inputDevice.LeftTrigger * zoomSpd * 0.02f);
 
             rotation = Quaternion.Euler(y, x, 0.0f);
 
@@ -65,7 +71,6 @@ public class CameraController : MonoBehaviour
 
             if (horizontal != 0)
             {
-                //float yValue = Mathf.Lerp(transform.rotation.y, , rotationSpeed * Time.deltaTime);
                 player.transform.Rotate(new Vector3(0, horizontal * (rotationSpeed * 2.75f) * Time.deltaTime, 0));
             }
             transform.rotation = Quaternion.Lerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
