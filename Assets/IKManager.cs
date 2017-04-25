@@ -6,8 +6,10 @@ public class IKManager : MonoBehaviour
 {
     RaycastHit hit;
     Animator anim;
-    Vector3 hitPoint;
-    
+    Transform hitPoint;
+
+    public RootMotion.FinalIK.BipedIK ik;
+
 
     private void Start()
     {
@@ -21,19 +23,20 @@ public class IKManager : MonoBehaviour
         {
             if (hit.point != null)
             {
-                hitPoint = hit.point;
-                print(hitPoint);
+                hitPoint = hit.transform;
             }
         }
 	}
 
+    private void LateUpdate()
+    {
+        ik.solvers.aim.target = hitPoint;
+        ik.solvers.rightHand.target = hitPoint;
+        ik.solvers.lookAt.target = hitPoint;
+    }
+
     void OnAnimatorIK()
     {
-        anim.SetLookAtWeight(1);
-        anim.SetLookAtPosition(hitPoint);
-        anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
-        anim.SetIKPosition(AvatarIKGoal.RightHand, hitPoint);
-        anim.SetIKRotationWeight(AvatarIKGoal.RightHand, 1);
-        anim.SetIKRotation(AvatarIKGoal.RightHand, new Quaternion(hitPoint.x, hitPoint.y, hitPoint.z, 0));
+
     }
 }
