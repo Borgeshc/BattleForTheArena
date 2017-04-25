@@ -8,8 +8,11 @@ public class Movement : MonoBehaviour
     public float speed;
     public float sprintSpeed;
     public float rotationSpeed;
+    public float dodgeSpeed;
+    public float dodgeDistance;
 
     public static bool moving;
+    public static bool canMove;
 
     CharacterController cc;
     float horizontal;
@@ -17,11 +20,13 @@ public class Movement : MonoBehaviour
     Vector3 direction;
     Animator anim;
     InputDevice inputDevice;
+    bool dodging;
 
 	void Start ()
     {
         cc = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
+        canMove = true;
 	}
 
     void Update()
@@ -33,16 +38,27 @@ public class Movement : MonoBehaviour
 
         direction = new Vector3(horizontal, 0, vertical);
 
-        if (direction != Vector3.zero)
-            moving = true;
-        else
-            moving = false;
+        if(canMove)
+        {
+            if (direction != Vector3.zero)
+                moving = true;
+            else
+                moving = false;
 
+            if (!inputDevice.LeftStickButton)
+                Move();
+            else
+                Sprint();
 
-        if (!inputDevice.LeftStickButton)
-            Move();
-        else
-            Sprint();
+            if (direction != Vector3.zero && inputDevice.Action3 && !dodging)
+            {
+                dodging = true;
+                anim.SetTrigger("Dodge");
+                anim.SetFloat("DodgeDirectionX", horizontal);
+                anim.SetFloat("DodgeDirectionY", vertical);
+                StartCoroutine(Dodging());
+            }
+        }
 	}
 
     void Move()
@@ -61,5 +77,14 @@ public class Movement : MonoBehaviour
 
         anim.SetFloat("Vertical", vertical);
         anim.SetFloat("Horizontal", horizontal);
+    }
+
+    IEnumerator Dodging()
+    {
+        yield return new WaitForSeconds(.2f);
+        direction = transform.TransformDirection(direction);
+        transform.position = Vector3.Lerp(transform.position, transform.position + direction * dodgeDistance , dodgeSpeed * Time.deltaTime);
+        yield return new WaitForSeconds(1f);
+        dodging = false;
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Fireball : Ability
+public class BasicAbility : Ability
 {
     public GameObject fireballEffect;
     public GameObject fireballSpawn;
