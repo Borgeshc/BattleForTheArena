@@ -17,9 +17,7 @@ public class IKManager : MonoBehaviour
     }
 	void Update ()
     {
-        var ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width /2, Screen.height / 2, 0));
-        Debug.DrawLine(ray.origin, Camera.main.transform.forward * 50000000, Color.red);
-		if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 500))
+		if(Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 300))
         {
             if (hit.point != null)
             {
