@@ -27,6 +27,10 @@ public class RFX4_ParticleCollisionHandler : MonoBehaviour
     }
     void OnParticleCollision(GameObject other)
     {
+        if(other.name == "Player")
+        {
+            other.GetComponent<Health>().TookDamage(10);
+        }
 #if !UNITY_5_5_OR_NEWER
         int safeLength = part.GetSafeCollisionEventSize();
         if (collisionEvents.Length < safeLength)
