@@ -7,13 +7,11 @@ public class AbilityManager : MonoBehaviour
 {
     [Tooltip("RightTrigger, Short Cooldown, ResourceGainer")]
     public Ability rightTrigger;
-    [Space, Tooltip("X on the Playstation Controller, A on the Xbox Controller")]
-    public Ability rightBumper;
-    [Space, Tooltip("X on the Playstation Controller, A on the Xbox Controller")]
-    public Ability action1;
-    [Space, Tooltip("X on the Playstation Controller, A on the Xbox Controller")]
+    [Space, Tooltip("Circle on the Playstation Controller, B on the Xbox Controller")]
     public Ability action2;
-    [Space, Tooltip("X on the Playstation Controller, A on the Xbox Controller")]
+    [Space, Tooltip("Triangle on the Playstation Controller, Y on the Xbox Controller")]
+    public Ability action3;
+    [Space, Tooltip("Square on the Playstation Controller, X on the Xbox Controller")]
     public Ability action4;
 
     InputDevice inputDevice;
@@ -27,10 +25,10 @@ public class AbilityManager : MonoBehaviour
             if(rightTrigger.readyToFire)
                 rightTrigger.FireAbility();
         }
-        else if(inputDevice.Action1.WasPressed)
+        else if(inputDevice.Action3.WasPressed)
         {
-            if (action1.readyToFire)
-                action1.FireAbility();
+            if (action3.readyToFire)
+                action3.FireAbility();
         }
         else if (inputDevice.Action2.WasPressed)
         {
@@ -42,11 +40,5 @@ public class AbilityManager : MonoBehaviour
             if (action4.readyToFire)
                 action4.FireAbility();
         }
-        else if (inputDevice.RightBumper.WasPressed)
-        {
-            if (rightBumper.readyToFire)
-                rightBumper.FireAbility();
-        }
-
     }
 }

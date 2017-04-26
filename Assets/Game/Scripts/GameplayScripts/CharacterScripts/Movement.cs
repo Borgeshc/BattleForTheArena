@@ -51,7 +51,7 @@ public class Movement : MonoBehaviour
             else
                 Sprint();
 
-            if (direction != Vector3.zero && inputDevice.Action3 && !dodging)
+            if (direction != Vector3.zero && inputDevice.Action1 && !dodging)
             {
                 dodging = true;
                 direction = transform.TransformDirection(direction);
