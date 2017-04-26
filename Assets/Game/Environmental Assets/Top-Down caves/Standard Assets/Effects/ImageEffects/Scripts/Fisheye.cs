@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
+using UnityEditor;
 
 namespace UnityStandardAssets.ImageEffects
 {
     [ExecuteInEditMode]
     [RequireComponent (typeof(Camera))]
-    [AddComponentMenu ("Image Effects/Displacement/Fisheye")]
+    [
+        AddComponentMenu ("Image Effects/Displacement/Fisheye")]
     public class Fisheye : PostEffectsBase
 	{
         public float strengthX = 0.05f;

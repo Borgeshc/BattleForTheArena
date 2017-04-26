@@ -1,10 +1,12 @@
 using System;
 using UnityEngine;
+using UnityEditor;
 
 namespace UnityStandardAssets.ImageEffects
 {
     [ExecuteInEditMode]
-    [AddComponentMenu("Image Effects/Color Adjustments/Sepia Tone")]
+    [
+        AddComponentMenu("Image Effects/Color Adjustments/Sepia Tone")]
     public class SepiaTone : ImageEffectBase
 	{
         // Called by camera to apply image effect

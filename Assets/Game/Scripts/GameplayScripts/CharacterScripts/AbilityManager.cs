@@ -6,15 +6,15 @@ using InControl;
 public class AbilityManager : MonoBehaviour
 {
     [Tooltip("RightTrigger, Short Cooldown, ResourceGainer")]
-    public Ability basicAbility;
+    public Ability rightTrigger;
     [Space, Tooltip("X on the Playstation Controller, A on the Xbox Controller")]
-    public Ability ability1;
+    public Ability rightBumper;
     [Space, Tooltip("X on the Playstation Controller, A on the Xbox Controller")]
-    public Ability ability2;
+    public Ability action1;
     [Space, Tooltip("X on the Playstation Controller, A on the Xbox Controller")]
-    public Ability ability3;
+    public Ability action2;
     [Space, Tooltip("X on the Playstation Controller, A on the Xbox Controller")]
-    public Ability ability4;
+    public Ability action4;
 
     InputDevice inputDevice;
 
@@ -24,28 +24,28 @@ public class AbilityManager : MonoBehaviour
 
         if(inputDevice.RightTrigger.WasPressed)
         {
-            if(basicAbility.readyToFire)
-            basicAbility.FireAbility();
+            if(rightTrigger.readyToFire)
+                rightTrigger.FireAbility();
         }
         else if(inputDevice.Action1.WasPressed)
         {
-            if (ability1.readyToFire)
-                ability1.FireAbility();
+            if (action1.readyToFire)
+                action1.FireAbility();
         }
         else if (inputDevice.Action2.WasPressed)
         {
-            if (ability2.readyToFire)
-                ability2.FireAbility();
+            if (action2.readyToFire)
+                action2.FireAbility();
         }
         else if (inputDevice.Action4.WasPressed)
         {
-            if (ability3.readyToFire)
-                ability3.FireAbility();
+            if (action4.readyToFire)
+                action4.FireAbility();
         }
         else if (inputDevice.RightBumper.WasPressed)
         {
-            if (ability4.readyToFire)
-                ability4.FireAbility();
+            if (rightBumper.readyToFire)
+                rightBumper.FireAbility();
         }
 
     }
