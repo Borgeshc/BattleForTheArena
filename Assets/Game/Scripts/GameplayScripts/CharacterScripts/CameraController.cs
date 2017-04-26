@@ -71,10 +71,11 @@ public class CameraController : MonoBehaviour
 
             if (horizontal != 0)
             {
-                player.transform.Rotate(new Vector3(0, horizontal * (rotationSpeed * 2.75f) * Time.deltaTime, 0));
+                Quaternion desiredRotation = Quaternion.Euler(0, x,0);
+                player.transform.rotation = Quaternion.Lerp(transform.rotation, desiredRotation, rotationSpeed * Time.deltaTime);
             }
             transform.rotation = Quaternion.Lerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
-            transform.position = Vector3.Lerp(transform.position, position, speed * Time.deltaTime); ;
+            transform.position = Vector3.Lerp(transform.position, position, speed * Time.deltaTime);
         }
     }
 
