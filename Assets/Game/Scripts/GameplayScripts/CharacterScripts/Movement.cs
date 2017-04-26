@@ -21,8 +21,9 @@ public class Movement : MonoBehaviour
     Animator anim;
     InputDevice inputDevice;
     bool dodging;
+    Vector3 destination;
 
-	void Start ()
+    void Start ()
     {
         cc = GetComponent<CharacterController>();
         anim = GetComponent<Animator>();
@@ -53,13 +54,32 @@ public class Movement : MonoBehaviour
             if (direction != Vector3.zero && inputDevice.Action3 && !dodging)
             {
                 dodging = true;
-                anim.SetTrigger("Dodge");
+                direction = transform.TransformDirection(direction);
+                destination = transform.position + direction * dodgeDistance;
+                anim.SetBool("Dodge", true);
                 anim.SetFloat("DodgeDirectionX", horizontal);
                 anim.SetFloat("DodgeDirectionY", vertical);
-                StartCoroutine(Dodging());
+               // StartCoroutine(Dodging());
             }
         }
-	}
+
+        if (dodging && Vector3.Distance(transform.position, destination) > 1)
+        {
+            Time.timeScale = .5f;   //This makes the animation look really good and its so fast its barely noticable that it happened. I would like to test how this affects the game when networking is a thing. It sounds scary but it is needed!!
+            //http://answers.unity3d.com/questions/625945/timescale-slowmo-and-multiplayer.html
+            //Someone asked about this in that link
+
+            canMove = false;
+            transform.position = Vector3.Lerp(transform.position, destination, dodgeSpeed * Time.deltaTime);
+        }
+        else
+        {
+            Time.timeScale = 1;
+            canMove = true;
+            dodging = false;
+            anim.SetBool("Dodge", false);
+        }
+    }
 
     void Move()
     {
@@ -77,14 +97,5 @@ public class Movement : MonoBehaviour
 
         anim.SetFloat("Vertical", vertical);
         anim.SetFloat("Horizontal", horizontal);
-    }
-
-    IEnumerator Dodging()
-    {
-        yield return new WaitForSeconds(.2f);
-        direction = transform.TransformDirection(direction);
-        transform.position = Vector3.Lerp(transform.position, transform.position + direction * dodgeDistance , dodgeSpeed * Time.deltaTime);
-        yield return new WaitForSeconds(1f);
-        dodging = false;
     }
 }
