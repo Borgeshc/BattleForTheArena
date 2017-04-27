@@ -23,22 +23,22 @@ public class AbilityManager : MonoBehaviour
         if(inputDevice.RightTrigger.WasPressed)
         {
             if(rightTrigger.readyToFire)
-                rightTrigger.FireAbility();
+                rightTrigger.CmdFireAbility();
         }
         else if(inputDevice.Action3.WasPressed)
         {
             if (action3.readyToFire)
-                action3.FireAbility();
+                action3.CmdFireAbility();
         }
         else if (inputDevice.Action2.WasPressed)
         {
             if (action2.readyToFire)
-                action2.FireAbility();
+                action2.CmdFireAbility();
         }
         else if (inputDevice.Action4.WasPressed)
         {
             if (action4.readyToFire)
-                action4.FireAbility();
+                action4.CmdFireAbility();
         }
     }
 }

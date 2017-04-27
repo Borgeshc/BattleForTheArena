@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class UseAbility : Ability
 {
@@ -26,7 +27,8 @@ public class UseAbility : Ability
         readyToFire = true;
     }
 
-    public override void FireAbility()
+    [Command]
+    public override void CmdFireAbility()
     {
         readyToFire = false;
         StartCoroutine(Fire());
@@ -40,13 +42,16 @@ public class UseAbility : Ability
         switch(spawnRotation)
         {
             case SpawnRotation.ForwardRotation:
-                Instantiate(Effect, spawnpoint.transform.position, transform.rotation);
+               GameObject clone = Instantiate(Effect, spawnpoint.transform.position, transform.rotation) as GameObject;
+                NetworkServer.Spawn(clone);
                 break;
             case SpawnRotation.InvertedRotation:
-                Instantiate(Effect, spawnpoint.transform.position, new Quaternion(transform.rotation.x, transform.rotation.y + 180, transform.rotation.z, transform.rotation.w));
+                GameObject clone1 = Instantiate(Effect, spawnpoint.transform.position, new Quaternion(transform.rotation.x, transform.rotation.y + 180, transform.rotation.z, transform.rotation.w)) as GameObject;
+                NetworkServer.Spawn(clone1);
                 break;
             case SpawnRotation.SpawnpointRotation:
-                Instantiate(Effect, spawnpoint.transform.position, spawnpoint.transform.rotation);
+                GameObject clone2 = Instantiate(Effect, spawnpoint.transform.position, spawnpoint.transform.rotation) as GameObject;
+                NetworkServer.Spawn(clone2);
                 break;
         }
 

@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-using UnityEditor;
+
 namespace UnityStandardAssets.ImageEffects
 {
     [RequireComponent (typeof(Camera))]
