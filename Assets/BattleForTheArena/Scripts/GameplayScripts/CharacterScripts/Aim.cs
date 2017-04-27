@@ -9,6 +9,11 @@ public class Aim : MonoBehaviour
     public SpriteRenderer reticle;
     InputDevice inputDevice;
 
+    void Start()
+    {
+        reticle = Camera.main.transform.FindChild("TargetReticle").GetComponent<SpriteRenderer>();
+        reticle.enabled = false;
+    }
     private void LateUpdate()
     {
         inputDevice = InputManager.ActiveDevice;

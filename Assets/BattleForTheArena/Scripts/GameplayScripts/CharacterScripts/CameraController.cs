@@ -31,7 +31,8 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player");
+        player = transform.parent.gameObject;
+        target = player.transform;
         anim = player.GetComponent<Animator>();
         Vector3 angles = transform.eulerAngles;
         x = angles.y;
