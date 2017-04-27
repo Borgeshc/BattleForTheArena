@@ -42,7 +42,7 @@ public class UseAbility : Ability
         switch(spawnRotation)
         {
             case SpawnRotation.ForwardRotation:
-               GameObject clone = Instantiate(Effect, spawnpoint.transform.position, transform.rotation) as GameObject;
+                GameObject clone = Instantiate(Effect, spawnpoint.transform.position, transform.rotation) as GameObject;
                 NetworkServer.Spawn(clone);
                 break;
             case SpawnRotation.InvertedRotation:
