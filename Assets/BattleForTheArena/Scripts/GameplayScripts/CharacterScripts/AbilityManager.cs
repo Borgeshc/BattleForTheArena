@@ -5,6 +5,12 @@ using InControl;
 
 public class AbilityManager : MonoBehaviour
 {
+    public delegate void OnAbilityUsed();
+    public static event OnAbilityUsed OnRightTriggerPressed;
+    public static event OnAbilityUsed OnActionTwoPressed;
+    public static event OnAbilityUsed OnActionThreePressed;
+    public static event OnAbilityUsed OnActionFourPressed;
+
     [Tooltip("RightTrigger, Short Cooldown, ResourceGainer")]
     public Ability rightTrigger;
     [Space, Tooltip("Circle on the Playstation Controller, B on the Xbox Controller")]
@@ -22,23 +28,39 @@ public class AbilityManager : MonoBehaviour
 
         if(inputDevice.RightTrigger.WasPressed)
         {
-            if(rightTrigger.readyToFire)
-                rightTrigger.CmdFireAbility();
-        }
-        else if(inputDevice.Action3.WasPressed)
-        {
-            if (action3.readyToFire)
-                action3.CmdFireAbility();
+            Debug.LogError("right trigger");
+            if (rightTrigger.readyToFire)
+            {
+                OnRightTriggerPressed();
+                //rightTrigger.CmdFireAbility();
+            }
         }
         else if (inputDevice.Action2.WasPressed)
         {
+            Debug.LogError("action 2");
             if (action2.readyToFire)
-                action2.CmdFireAbility();
+            {
+                OnActionTwoPressed();
+                //action2.CmdFireAbility();
+            }
         }
+        else if(inputDevice.Action3.WasPressed)
+        {
+            Debug.LogError("action 3");
+            if (action3.readyToFire)
+            {
+                OnActionThreePressed();
+                //action3.CmdFireAbility();
+            }
+        }        
         else if (inputDevice.Action4.WasPressed)
         {
+            Debug.LogError("action 4");
             if (action4.readyToFire)
-                action4.CmdFireAbility();
+            {
+                OnActionFourPressed();
+                //action4.CmdFireAbility();
+            }
         }
     }
 }

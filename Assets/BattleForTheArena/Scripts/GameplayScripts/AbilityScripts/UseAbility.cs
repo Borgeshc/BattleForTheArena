@@ -19,7 +19,59 @@ public class UseAbility : Ability
 
     public SpawnRotation spawnRotation = SpawnRotation.ForwardRotation;
 
+    public enum KeyBind
+    {
+        RightTrigger,
+        ActionTwo,
+        ActionThree,
+        ActionFour
+    };
+
+    public KeyBind keyBind = KeyBind.RightTrigger;
+
     Animator anim;
+
+    void OnEnable()
+    {
+        switch(keyBind)
+        {
+            case KeyBind.RightTrigger:
+                AbilityManager.OnRightTriggerPressed += FireAbility;
+                break;
+            case KeyBind.ActionTwo:
+                AbilityManager.OnActionTwoPressed += FireAbility;
+                break;
+            case KeyBind.ActionThree:
+                AbilityManager.OnActionThreePressed += FireAbility;
+                break;
+            case KeyBind.ActionFour:
+                AbilityManager.OnActionFourPressed += FireAbility;
+                break;
+            default:
+                break;
+        }
+    }
+
+    void OnDisable()
+    {
+        switch (keyBind)
+        {
+            case KeyBind.RightTrigger:
+                AbilityManager.OnRightTriggerPressed -= FireAbility;
+                break;
+            case KeyBind.ActionTwo:
+                AbilityManager.OnActionTwoPressed -= FireAbility;
+                break;
+            case KeyBind.ActionThree:
+                AbilityManager.OnActionThreePressed -= FireAbility;
+                break;
+            case KeyBind.ActionFour:
+                AbilityManager.OnActionFourPressed -= FireAbility;
+                break;
+            default:
+                break;
+        }
+    }
 
     void Start()
     {
@@ -35,13 +87,13 @@ public class UseAbility : Ability
         readyToFire = true;
     }
 
-    public override void CmdFireAbility()
+    public override void FireAbility()
     {
-        CmdFire();
+        CmdFireAbility();
     }
 
     [Command]
-    void CmdFire()
+    void CmdFireAbility()
     {
         readyToFire = false;
         StartCoroutine(Fire());
