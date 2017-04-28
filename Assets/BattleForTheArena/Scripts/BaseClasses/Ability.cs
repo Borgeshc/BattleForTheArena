@@ -7,7 +7,6 @@ public class Ability : NetworkBehaviour
 { 
     public bool readyToFire;
 
-    [Command]
     public virtual void CmdFireAbility()
     {
 

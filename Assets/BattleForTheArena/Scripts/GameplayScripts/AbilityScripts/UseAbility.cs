@@ -25,10 +25,23 @@ public class UseAbility : Ability
     {
         anim = GetComponent<Animator>();
         readyToFire = true;
+        CmdInitOnServer();
     }
 
     [Command]
+    void CmdInitOnServer()
+    {
+        anim = GetComponent<Animator>();
+        readyToFire = true;
+    }
+
     public override void CmdFireAbility()
+    {
+        CmdFire();
+    }
+
+    [Command]
+    void CmdFire()
     {
         readyToFire = false;
         StartCoroutine(Fire());
