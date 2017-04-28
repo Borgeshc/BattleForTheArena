@@ -7,8 +7,8 @@ public class Ability : NetworkBehaviour
 { 
     public bool readyToFire;
 
-    public virtual void FireAbility()
-    {
+    //public virtual void FireAbility()
+    //{
 
-    }
+    //}
 }
