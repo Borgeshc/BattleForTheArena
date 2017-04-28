@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class UseAbilityToo : MonoBehaviour {
+public class UseAbilityToo : NetworkBehaviour
+{
 
     public bool readyToFire;
     public GameObject Effect;

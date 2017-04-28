@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class UseAbility : MonoBehaviour
+public class UseAbility : NetworkBehaviour
 {
     public GameObject Effect;
     public GameObject spawnpoint;
