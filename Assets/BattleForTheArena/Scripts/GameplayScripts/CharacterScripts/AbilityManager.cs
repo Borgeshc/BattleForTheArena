@@ -28,7 +28,6 @@ public class AbilityManager : MonoBehaviour
 
         if(inputDevice.RightTrigger.WasPressed)
         {
-            Debug.LogError("right trigger");
             if (rightTrigger.readyToFire)
             {
                 OnRightTriggerPressed();
@@ -37,7 +36,6 @@ public class AbilityManager : MonoBehaviour
         }
         else if (inputDevice.Action2.WasPressed)
         {
-            Debug.LogError("action 2");
             if (action2.readyToFire)
             {
                 OnActionTwoPressed();
@@ -46,7 +44,6 @@ public class AbilityManager : MonoBehaviour
         }
         else if(inputDevice.Action3.WasPressed)
         {
-            Debug.LogError("action 3");
             if (action3.readyToFire)
             {
                 OnActionThreePressed();
@@ -55,7 +52,6 @@ public class AbilityManager : MonoBehaviour
         }        
         else if (inputDevice.Action4.WasPressed)
         {
-            Debug.LogError("action 4");
             if (action4.readyToFire)
             {
                 OnActionFourPressed();
