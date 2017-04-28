@@ -12,13 +12,13 @@ public class AbilityManager : MonoBehaviour
     public static event OnAbilityUsed OnActionFourPressed;
 
     [Tooltip("RightTrigger, Short Cooldown, ResourceGainer")]
-    public Ability rightTrigger;
+    public UseAbility rightTrigger;
     [Space, Tooltip("Circle on the Playstation Controller, B on the Xbox Controller")]
-    public Ability action2;
+    public UseAbility action2;
     [Space, Tooltip("Triangle on the Playstation Controller, Y on the Xbox Controller")]
-    public Ability action3;
+    public UseAbility action3;
     [Space, Tooltip("Square on the Playstation Controller, X on the Xbox Controller")]
-    public Ability action4;
+    public UseAbilityToo action4;
 
     InputDevice inputDevice;
 

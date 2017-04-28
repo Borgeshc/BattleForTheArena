@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class UseAbility : Ability
+public class UseAbility : MonoBehaviour
 {
     public GameObject Effect;
     public GameObject spawnpoint;
     public float casttime;
     public float cooldown;
+    public bool readyToFire;
 
     public enum SpawnRotation
     {
@@ -87,7 +88,7 @@ public class UseAbility : Ability
         readyToFire = true;
     }
 
-    public override void FireAbility()
+    public void FireAbility()
     {
         CmdFireAbility();
     }

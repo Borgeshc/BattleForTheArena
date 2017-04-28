@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class UseAbilityToo : Ability {
+public class UseAbilityToo : MonoBehaviour {
 
+    public bool readyToFire;
     public GameObject Effect;
     public GameObject spawnpoint;
     public float casttime;
@@ -87,7 +88,7 @@ public class UseAbilityToo : Ability {
         readyToFire = true;
     }
 
-    public override void FireAbility()
+    public void FireAbility()
     {
         CmdFireAbility();
     }
