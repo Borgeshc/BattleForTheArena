@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class ArcaneMissile : NetworkBehaviour
+public class Chill : NetworkBehaviour
 {
 
     public GameObject Effect;
@@ -93,7 +93,6 @@ public class ArcaneMissile : NetworkBehaviour
 
     public void FireAbility()
     {
-        if(readyToFire)
         CmdFireAbility();
     }
 

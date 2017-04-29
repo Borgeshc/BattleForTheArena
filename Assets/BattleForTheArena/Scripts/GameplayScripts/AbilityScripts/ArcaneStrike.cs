@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class ArcaneMissile : NetworkBehaviour
+public class ArcaneStrike : NetworkBehaviour
 {
-
     public GameObject Effect;
     public GameObject spawnpoint;
     public float casttime;
@@ -93,7 +92,6 @@ public class ArcaneMissile : NetworkBehaviour
 
     public void FireAbility()
     {
-        if(readyToFire)
         CmdFireAbility();
     }
 

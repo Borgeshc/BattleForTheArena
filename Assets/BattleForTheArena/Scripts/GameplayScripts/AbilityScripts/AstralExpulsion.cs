@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class ArcaneMissile : NetworkBehaviour
+public class AstralExpulsion : NetworkBehaviour
 {
 
     public GameObject Effect;
