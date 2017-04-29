@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class UseAbilityToo : NetworkBehaviour
+public class DragonWrath : NetworkBehaviour
 {
 
-    public bool readyToFire;
     public GameObject Effect;
     public GameObject spawnpoint;
     public float casttime;
     public float cooldown;
+    public bool readyToFire;
 
     public enum SpawnRotation
     {
@@ -20,6 +20,8 @@ public class UseAbilityToo : NetworkBehaviour
     };
 
     public SpawnRotation spawnRotation = SpawnRotation.ForwardRotation;
+
+
 
     public enum KeyBind
     {
