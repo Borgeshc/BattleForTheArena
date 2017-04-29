@@ -19,6 +19,8 @@ public class Health : MonoBehaviour
     {
         health = baseHealth;
         anim = GetComponent<Animator>();
+        healthBar = GameObject.Find("PlayerHealth").GetComponent<Image>();
+        healthBar.fillAmount = health / baseHealth;
     }
 
     public void TookDamage(float damage)
