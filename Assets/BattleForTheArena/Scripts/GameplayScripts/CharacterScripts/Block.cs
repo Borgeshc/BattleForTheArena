@@ -24,8 +24,9 @@ public class Block : MonoBehaviour
 
         if(canBlock)
         {
-            if (inputDevice.LeftBumper && !Movement.moving && !Aim.isAiming)
+            if (inputDevice.LeftBumper && !Aim.isAiming)
             {
+                Movement.canMove = false;
                 if (!isBlocking)
                     isBlocking = true;
 
@@ -34,6 +35,7 @@ public class Block : MonoBehaviour
             }
             else
             {
+                Movement.canMove = true;
                 if (isBlocking)
                     isBlocking = false;
 
@@ -43,7 +45,8 @@ public class Block : MonoBehaviour
         }
         else
         {
-            if(isBlocking)
+            Movement.canMove = true;
+            if (isBlocking)
             isBlocking = false;
 
             if(anim.GetBool("Block"))

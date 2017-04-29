@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class Movement : MonoBehaviour
 {
-    public float speed;
+    public float baseSpeed;
     public float sprintSpeed;
     public float rotationSpeed;
     public float dodgeSpeed;
@@ -29,6 +29,8 @@ public class Movement : MonoBehaviour
     bool dodging;
     Vector3 destination;
     bool exhausted;
+    [HideInInspector]
+    public float speed;
 
     void Start ()
     {
@@ -36,6 +38,7 @@ public class Movement : MonoBehaviour
         anim = GetComponent<Animator>();
         canMove = true;
         staminaBar = GameObject.Find("PlayerStamina").GetComponent<Image>();
+        speed = baseSpeed;
 	}
 
     void Update()
@@ -86,44 +89,6 @@ public class Movement : MonoBehaviour
                 }
             }
 
-            if (Block.isBlocking)
-            {
-                if(!exhausted)
-                {
-                    Block.canBlock = true;
-                    staminaBar.fillAmount -= (Time.deltaTime * .75f);
-                    if (staminaBar.fillAmount <= 0)
-                    {
-                        exhausted = true;
-                        Block.canBlock = false;
-                    }
-                  
-                }
-                else
-                {
-                    if (staminaBar.fillAmount >= 1)
-                    {
-                        exhausted = false;
-                        Block.canBlock = true; ;
-                    }
-                }
-            }
-            else
-            {
-
-                if (exhausted)
-                {
-                    if (staminaBar.fillAmount >= 1)
-                    {
-                        exhausted = false;
-                    }
-                }
-
-                sprinting = false;
-                staminaBar.fillAmount += Time.deltaTime * .25f;
-            }
-            
-
             if (direction != Vector3.zero && inputDevice.Action1 && !dodging && staminaBar.fillAmount >= .5f)
             {
                 dodging = true;
@@ -151,6 +116,37 @@ public class Movement : MonoBehaviour
             canMove = true;
             dodging = false;
             anim.SetBool("Dodge", false);
+        }
+
+        if (Block.isBlocking)
+        {
+            if (!exhausted)
+            {
+                Block.canBlock = true;
+                staminaBar.fillAmount -= (Time.deltaTime * .75f);
+                if (staminaBar.fillAmount <= 0)
+                {
+                    exhausted = true;
+                    Block.canBlock = false;
+                }
+
+            }
+            else
+            {
+                if (staminaBar.fillAmount >= 1)
+                {
+                    exhausted = false;
+                    Block.canBlock = true; ;
+                }
+            }
+        }
+        else
+        {
+            if (staminaBar.fillAmount >= 1)
+            {
+                exhausted = false;
+                Block.canBlock = true;
+            }
         }
     }
 
