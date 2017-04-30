@@ -15,8 +15,10 @@ public class Movement : MonoBehaviour
 
     public static bool moving;
     public static bool canMove;
+    public static bool unableToAct;
 
     Image staminaBar;
+    Image recoverBar;
 
     bool sprinting;
 
@@ -31,6 +33,10 @@ public class Movement : MonoBehaviour
     bool exhausted;
     [HideInInspector]
     public float speed;
+    StatusEffects statusEffects;
+    bool recovering;
+    bool storingStam;
+    float stamAmount;
 
     void Start ()
     {
@@ -38,7 +44,10 @@ public class Movement : MonoBehaviour
         anim = GetComponent<Animator>();
         canMove = true;
         staminaBar = GameObject.Find("PlayerStamina").GetComponent<Image>();
+        recoverBar = GameObject.Find("RecoverBar").GetComponent<Image>();
         speed = baseSpeed;
+        unableToAct = false;
+        statusEffects = GetComponent<StatusEffects>();
 	}
 
     void Update()
@@ -49,20 +58,41 @@ public class Movement : MonoBehaviour
         vertical = inputDevice.LeftStick.Y;
 
         direction = new Vector3(horizontal, 0, vertical);
-
-        if (canMove)
+        if(StatusEffects.statusEffectActive)
         {
-            if (direction != Vector3.zero)
-                moving = true;
-            else
-                moving = false;
-
-
-            if (!inputDevice.LeftStickButton)
+            if (!recoverBar.IsActive())
             {
-                Move();
+                recoverBar.gameObject.SetActive(true);
+                recoverBar.fillAmount = 1;
+            }
 
-                if (exhausted)
+            if(inputDevice.Action1 && !recovering)
+            {
+                recovering = true;
+                StartCoroutine(Recover());
+            }
+        }
+        else
+        {
+            if(recoverBar.IsActive())
+            recoverBar.gameObject.SetActive(false);
+        }
+
+        if(!unableToAct)
+        {
+            if (canMove)
+            {
+                if (direction != Vector3.zero)
+                    moving = true;
+                else
+                    moving = false;
+
+
+                if (!inputDevice.LeftStickButton)
+                {
+                    Move();
+
+                    if (exhausted)
                     {
                         if (staminaBar.fillAmount >= 1)
                             exhausted = false;
@@ -70,83 +100,85 @@ public class Movement : MonoBehaviour
 
                     sprinting = false;
                     staminaBar.fillAmount += Time.deltaTime * .25f;
+                }
+                else if (inputDevice.LeftStickButton)
+                {
+                    if (!exhausted)
+                    {
+                        Sprint();
+                        staminaBar.fillAmount -= (Time.deltaTime * .5f);
+                    }
+                    else
+                    {
+                        Move();
+                    }
+
+                    if (staminaBar.fillAmount <= 0)
+                    {
+                        exhausted = true;
+                    }
+                }
+
+                if (direction != Vector3.zero && inputDevice.Action1 && !dodging && staminaBar.fillAmount >= .5f)
+                {
+                    dodging = true;
+                    staminaBar.fillAmount -= dodgeStamConsumption;
+                    direction = transform.TransformDirection(direction);
+                    destination = transform.position + direction * dodgeDistance;
+                    anim.SetBool("Dodge", true);
+                    anim.SetFloat("DodgeDirectionX", horizontal);
+                    anim.SetFloat("DodgeDirectionY", vertical);
+                }
             }
-            else if(inputDevice.LeftStickButton)
+
+            if (dodging && Vector3.Distance(transform.position, destination) > 1)
+            {
+                Time.timeScale = .5f;   //This makes the animation look really good and its so fast its barely noticable that it happened. I would like to test how this affects the game when networking is a thing. It sounds scary but it is needed!!
+                                        //http://answers.unity3d.com/questions/625945/timescale-slowmo-and-multiplayer.html
+                                        //Someone asked about this in that link
+
+                canMove = false;
+                transform.position = Vector3.Lerp(transform.position, destination, dodgeSpeed * Time.deltaTime);
+            }
+            else
+            {
+                Time.timeScale = 1;
+                canMove = true;
+                dodging = false;
+                anim.SetBool("Dodge", false);
+            }
+
+            if (Block.isBlocking)
             {
                 if (!exhausted)
                 {
-                    Sprint();
-                    staminaBar.fillAmount -= (Time.deltaTime * .5f);
+                    Block.canBlock = true;
+                    staminaBar.fillAmount -= (Time.deltaTime * .75f);
+                    if (staminaBar.fillAmount <= 0)
+                    {
+                        exhausted = true;
+                        Block.canBlock = false;
+                    }
+
                 }
                 else
                 {
-                    Move();
+                    if (staminaBar.fillAmount >= 1)
+                    {
+                        exhausted = false;
+                        Block.canBlock = true; ;
+                    }
                 }
-
-                if (staminaBar.fillAmount <= 0)
-                {
-                    exhausted = true;
-                }
-            }
-
-            if (direction != Vector3.zero && inputDevice.Action1 && !dodging && staminaBar.fillAmount >= .5f)
-            {
-                dodging = true;
-                staminaBar.fillAmount -= dodgeStamConsumption;
-                direction = transform.TransformDirection(direction);
-                destination = transform.position + direction * dodgeDistance;
-                anim.SetBool("Dodge", true);
-                anim.SetFloat("DodgeDirectionX", horizontal);
-                anim.SetFloat("DodgeDirectionY", vertical);
-            }
-        }
-
-        if (dodging && Vector3.Distance(transform.position, destination) > 1)
-        {
-            Time.timeScale = .5f;   //This makes the animation look really good and its so fast its barely noticable that it happened. I would like to test how this affects the game when networking is a thing. It sounds scary but it is needed!!
-            //http://answers.unity3d.com/questions/625945/timescale-slowmo-and-multiplayer.html
-            //Someone asked about this in that link
-
-            canMove = false;
-            transform.position = Vector3.Lerp(transform.position, destination, dodgeSpeed * Time.deltaTime);
-        }
-        else
-        {
-            Time.timeScale = 1;
-            canMove = true;
-            dodging = false;
-            anim.SetBool("Dodge", false);
-        }
-
-        if (Block.isBlocking)
-        {
-            if (!exhausted)
-            {
-                Block.canBlock = true;
-                staminaBar.fillAmount -= (Time.deltaTime * .75f);
-                if (staminaBar.fillAmount <= 0)
-                {
-                    exhausted = true;
-                    Block.canBlock = false;
-                }
-
             }
             else
             {
                 if (staminaBar.fillAmount >= 1)
                 {
                     exhausted = false;
-                    Block.canBlock = true; ;
+                    Block.canBlock = true;
                 }
             }
-        }
-        else
-        {
-            if (staminaBar.fillAmount >= 1)
-            {
-                exhausted = false;
-                Block.canBlock = true;
-            }
+
         }
     }
 
@@ -169,5 +201,24 @@ public class Movement : MonoBehaviour
 
         anim.SetFloat("Vertical", vertical);
         anim.SetFloat("Horizontal", horizontal);
+    }
+
+    IEnumerator Recover()
+    {
+        if(!storingStam)
+        {
+            storingStam = true;
+            stamAmount = staminaBar.fillAmount * .1f;
+        }
+        staminaBar.fillAmount -= stamAmount;
+        recoverBar.fillAmount -= stamAmount;
+        if (recoverBar.fillAmount <= 0)
+        {
+            statusEffects.StopCoroutines();
+            storingStam = false;
+        }
+
+        yield return new WaitForSeconds(.1f);
+        recovering = false;
     }
 }

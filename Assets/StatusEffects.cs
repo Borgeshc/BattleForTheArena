@@ -4,6 +4,17 @@ using UnityEngine;
 
 public class StatusEffects : MonoBehaviour
 {
+    public  bool GotBurning;
+    public  bool GotSlowed;
+    public  bool GotStunned;
+    public  bool GotKnockedDown;
+    public  bool GotRooted;
+    public  bool GotFrozen;
+    public  bool GotBleeding;
+
+    // Everything above is for testing
+
+    public static bool statusEffectActive;
     public static bool isBurning;
     public static bool isSlowed;
     public static bool isStunned;
@@ -39,6 +50,80 @@ public class StatusEffects : MonoBehaviour
         movement = GetComponent<Movement>();
     }
 
+    private void Update()
+    {
+        if(!statusEffectActive)
+        {
+            if (GotBurning)
+            {
+                isBurning = true;
+                ApplyEffect(5, 0);
+            }
+            else if (GotSlowed)
+            {
+                isSlowed = true;
+                ApplyEffect(0, 5);
+            }
+            else if (GotStunned)
+            {
+                isStunned = true;
+                ApplyEffect(0, 0);
+            }
+            else if (GotKnockedDown)
+            {
+                isKnockedDown = true;
+                ApplyEffect(0, 0);
+            }
+            else if (GotRooted)
+            {
+                isRooted = true;
+                ApplyEffect(0, 0);
+            }
+            else if (GotFrozen)
+            {
+                isFrozen = true;
+                ApplyEffect(0, 0);
+            }
+            else if (GotBleeding)
+            {
+                isBleeding = true;
+                ApplyEffect(4, 0);
+            }
+        }
+  
+    }
+
+    public void StopCoroutines()
+    {
+        if(stunned != null)
+        StopCoroutine(stunned);
+
+        if(knockedDown != null)
+        StopCoroutine(knockedDown);
+
+        if(rooted != null)
+        StopCoroutine(rooted);
+
+        if(frozen != null)
+        StopCoroutine(frozen);
+
+        anim.SetBool("Stunned", false);
+        anim.SetBool("KnockedDown", false);
+        Movement.unableToAct = false;
+        statusEffectActive = false;
+        isStunned = false;
+        isKnockedDown = false;
+        isRooted = false;
+        isFrozen = false;
+
+        //These four are for testing
+        GotStunned = false;
+        GotKnockedDown = false;
+        GotRooted = false;
+        GotFrozen = false;
+
+    }
+
     /// <summary>
     /// If does not deal damage or slows make the parameters 0
     /// </summary>
@@ -68,6 +153,7 @@ public class StatusEffects : MonoBehaviour
         }
         else if (isStunned)
         {
+            statusEffectActive = true;
             if (stunned != null)
             {
                 StopCoroutine(stunned);
@@ -78,6 +164,7 @@ public class StatusEffects : MonoBehaviour
         }
         else if (isKnockedDown)
         {
+            statusEffectActive = true;
             if (knockedDown != null)
             {
                 StopCoroutine(knockedDown);
@@ -88,6 +175,7 @@ public class StatusEffects : MonoBehaviour
         }
         else if (isRooted)
         {
+            statusEffectActive = true;
             if (rooted != null)
             {
                 StopCoroutine(rooted);
@@ -98,6 +186,7 @@ public class StatusEffects : MonoBehaviour
         }
         else if (isFrozen)
         {
+            statusEffectActive = true;
             if (frozen != null)
             {
                 StopCoroutine(frozen);
@@ -125,6 +214,10 @@ public class StatusEffects : MonoBehaviour
             health.TookDamage(damage);
             yield return new WaitForSeconds(1);
         }
+        isBurning = false;
+
+        statusEffectActive = false;
+        GotBurning = false;
     }
 
     IEnumerator Slowed(float slowAmt)
@@ -132,34 +225,58 @@ public class StatusEffects : MonoBehaviour
         movement.speed = movement.baseSpeed / slowAmt;
         yield return new WaitForSeconds(slowedLength);
         movement.speed = movement.baseSpeed;
+        isSlowed = false;
+
+        statusEffectActive = false;
+        GotSlowed = false;
     }
 
     IEnumerator Stunned()
     {
-        movement.speed = 0;
+        Movement.unableToAct = true;
+        anim.SetBool("Stunned", true);
         yield return new WaitForSeconds(stunnedLength);
-        movement.speed = movement.baseSpeed;
+        anim.SetBool("Stunned", false);
+        Movement.unableToAct = false;
+        isStunned = false;
+
+        statusEffectActive = false;
+        GotStunned = false;
     }
 
     IEnumerator KnockedDown()
     {
-        movement.speed = 0;
+        Movement.unableToAct = true;
+        anim.SetBool("KnockedDown", true);
         yield return new WaitForSeconds(knockedDownLength);
-        movement.speed = movement.baseSpeed;
+        anim.SetBool("KnockedDown", false);
+        Movement.unableToAct = false;
+        isKnockedDown = false;
+
+        statusEffectActive = false;
+        GotKnockedDown = false;
     }
 
     IEnumerator Rooted()
     {
-        movement.speed = 0;
+        Movement.unableToAct = true;
         yield return new WaitForSeconds(rootedLength);
-        movement.speed = movement.baseSpeed;
+        Movement.unableToAct = false;
+        isRooted = false;
+
+        statusEffectActive = false;
+        GotRooted = false;
     }
 
     IEnumerator Frozen()
     {
-        movement.speed = 0;
+        Movement.unableToAct = true;
         yield return new WaitForSeconds(frozenLength);
-        movement.speed = movement.baseSpeed;
+        Movement.unableToAct = false;
+        isFrozen = false;
+
+        statusEffectActive = false;
+        GotFrozen = false;
     }
 
     IEnumerator Bleeding(float damage)
@@ -169,5 +286,9 @@ public class StatusEffects : MonoBehaviour
             health.TookDamage(damage);
             yield return new WaitForSeconds(1);
         }
+        isBleeding = false;
+
+        statusEffectActive = false;
+        GotBleeding = false;
     }
 }
