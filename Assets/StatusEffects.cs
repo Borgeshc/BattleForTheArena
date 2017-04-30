@@ -1,19 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.UI;
 public class StatusEffects : MonoBehaviour
 {
-    public  bool GotBurning;
-    public  bool GotSlowed;
-    public  bool GotStunned;
-    public  bool GotKnockedDown;
-    public  bool GotRooted;
-    public  bool GotFrozen;
-    public  bool GotBleeding;
-
-    // Everything above is for testing
-
     public static bool statusEffectActive;
     public static bool isBurning;
     public static bool isSlowed;
@@ -30,6 +20,14 @@ public class StatusEffects : MonoBehaviour
     public float rootedLength;
     public float frozenLength;
     public float bleedLength;
+
+    Image burnImg;
+    Image slowedImg;
+    Image stunnedImg;
+    Image knockedDownImg;
+    Image rootedImg;
+    Image frozenImg;
+    Image bleedingImg;
 
     Coroutine burning;
     Coroutine slowed;
@@ -48,49 +46,21 @@ public class StatusEffects : MonoBehaviour
         anim = GetComponent<Animator>();
         health = GetComponent<Health>();
         movement = GetComponent<Movement>();
-    }
+        burnImg = GameObject.Find("Burning").GetComponent<Image>();
+        slowedImg = GameObject.Find("Slowed").GetComponent<Image>();
+        stunnedImg = GameObject.Find("Stunned").GetComponent<Image>();
+        knockedDownImg = GameObject.Find("KnockedDown").GetComponent<Image>();
+        rootedImg = GameObject.Find("Rooted").GetComponent<Image>();
+        frozenImg = GameObject.Find("Frozen").GetComponent<Image>();
+        bleedingImg = GameObject.Find("Bleeding").GetComponent<Image>();
 
-    private void Update()
-    {
-        if(!statusEffectActive)
-        {
-            if (GotBurning)
-            {
-                isBurning = true;
-                ApplyEffect(5, 0);
-            }
-            else if (GotSlowed)
-            {
-                isSlowed = true;
-                ApplyEffect(0, 5);
-            }
-            else if (GotStunned)
-            {
-                isStunned = true;
-                ApplyEffect(0, 0);
-            }
-            else if (GotKnockedDown)
-            {
-                isKnockedDown = true;
-                ApplyEffect(0, 0);
-            }
-            else if (GotRooted)
-            {
-                isRooted = true;
-                ApplyEffect(0, 0);
-            }
-            else if (GotFrozen)
-            {
-                isFrozen = true;
-                ApplyEffect(0, 0);
-            }
-            else if (GotBleeding)
-            {
-                isBleeding = true;
-                ApplyEffect(4, 0);
-            }
-        }
-  
+        burnImg.gameObject.SetActive(false);
+        slowedImg.gameObject.SetActive(false);
+        stunnedImg.gameObject.SetActive(false);
+        knockedDownImg.gameObject.SetActive(false);
+        rootedImg.gameObject.SetActive(false);
+        frozenImg.gameObject.SetActive(false);
+        bleedingImg.gameObject.SetActive(false);
     }
 
     public void StopCoroutines()
@@ -110,18 +80,38 @@ public class StatusEffects : MonoBehaviour
         anim.SetBool("Stunned", false);
         anim.SetBool("KnockedDown", false);
         Movement.unableToAct = false;
-        statusEffectActive = false;
         isStunned = false;
         isKnockedDown = false;
         isRooted = false;
         isFrozen = false;
 
-        //These four are for testing
-        GotStunned = false;
-        GotKnockedDown = false;
-        GotRooted = false;
-        GotFrozen = false;
+        stunnedImg.fillAmount = 1;
+        knockedDownImg.fillAmount = 1;
+        rootedImg.fillAmount = 1;
+        frozenImg.fillAmount = 1;
 
+        stunnedImg.gameObject.SetActive(false);
+        knockedDownImg.gameObject.SetActive(false);
+        rootedImg.gameObject.SetActive(false);
+        frozenImg.gameObject.SetActive(false);
+    }
+
+    IEnumerator UpdateEffectImg(Image image, float length)
+    {
+        if(image.IsActive())
+        {
+            for (int i = 0; i < length; i++)
+            {
+                if (image.IsActive())
+                {
+                    image.fillAmount -= (1 / length);
+                    yield return new WaitForSeconds(1);
+                }
+                else
+                    break;
+            }
+            image.fillAmount = 1;
+        }
     }
 
     /// <summary>
@@ -209,86 +199,93 @@ public class StatusEffects : MonoBehaviour
 
     IEnumerator Burning(float damage)
     {
+        burnImg.gameObject.SetActive(true);
+        StartCoroutine(UpdateEffectImg(burnImg, burnLength));
+
         for(int i = 0; i < burnLength; i++)
         {
             health.TookDamage(damage);
             yield return new WaitForSeconds(1);
         }
         isBurning = false;
-
-        statusEffectActive = false;
-        GotBurning = false;
+        burnImg.gameObject.SetActive(false);
     }
 
     IEnumerator Slowed(float slowAmt)
     {
+        slowedImg.gameObject.SetActive(true);
+        StartCoroutine(UpdateEffectImg(slowedImg, slowedLength));
+
         movement.speed = movement.baseSpeed / slowAmt;
         yield return new WaitForSeconds(slowedLength);
         movement.speed = movement.baseSpeed;
         isSlowed = false;
-
-        statusEffectActive = false;
-        GotSlowed = false;
+        slowedImg.gameObject.SetActive(false);
     }
 
     IEnumerator Stunned()
     {
+        stunnedImg.gameObject.SetActive(true);
+        StartCoroutine(UpdateEffectImg(stunnedImg, stunnedLength));
+
         Movement.unableToAct = true;
         anim.SetBool("Stunned", true);
         yield return new WaitForSeconds(stunnedLength);
         anim.SetBool("Stunned", false);
         Movement.unableToAct = false;
         isStunned = false;
-
-        statusEffectActive = false;
-        GotStunned = false;
+        stunnedImg.gameObject.SetActive(false);
     }
 
     IEnumerator KnockedDown()
     {
+        knockedDownImg.gameObject.SetActive(true);
+        StartCoroutine(UpdateEffectImg(knockedDownImg, knockedDownLength));
+
         Movement.unableToAct = true;
         anim.SetBool("KnockedDown", true);
         yield return new WaitForSeconds(knockedDownLength);
         anim.SetBool("KnockedDown", false);
         Movement.unableToAct = false;
         isKnockedDown = false;
-
-        statusEffectActive = false;
-        GotKnockedDown = false;
+        knockedDownImg.gameObject.SetActive(false);
     }
 
     IEnumerator Rooted()
     {
+        rootedImg.gameObject.SetActive(true);
+        StartCoroutine(UpdateEffectImg(rootedImg, rootedLength));
+
         Movement.unableToAct = true;
         yield return new WaitForSeconds(rootedLength);
         Movement.unableToAct = false;
         isRooted = false;
-
-        statusEffectActive = false;
-        GotRooted = false;
+        rootedImg.gameObject.SetActive(false);
     }
 
     IEnumerator Frozen()
     {
+        frozenImg.gameObject.SetActive(true);
+        StartCoroutine(UpdateEffectImg(frozenImg, frozenLength));
+
         Movement.unableToAct = true;
         yield return new WaitForSeconds(frozenLength);
         Movement.unableToAct = false;
         isFrozen = false;
-
-        statusEffectActive = false;
-        GotFrozen = false;
+        frozenImg.gameObject.SetActive(false);
     }
 
     IEnumerator Bleeding(float damage)
     {
+        bleedingImg.gameObject.SetActive(true);
+        StartCoroutine(UpdateEffectImg(bleedingImg, bleedLength));
+
         for (int i = 0; i < bleedLength; i++)
         {
             health.TookDamage(damage);
             yield return new WaitForSeconds(1);
         }
         isBleeding = false;
-
-        statusEffectActive = false;
-        GotBleeding = false;
+        bleedingImg.gameObject.SetActive(false);
     }
 }

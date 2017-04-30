@@ -5,7 +5,6 @@ using UnityEngine.Networking;
 
 public class Surge : NetworkBehaviour
 {
-
     public GameObject Effect;
     public GameObject spawnpoint;
     public float casttime;
@@ -20,8 +19,7 @@ public class Surge : NetworkBehaviour
     };
 
     public SpawnRotation spawnRotation = SpawnRotation.ForwardRotation;
-
-
+    
 
     public enum KeyBind
     {
