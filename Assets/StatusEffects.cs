@@ -96,9 +96,117 @@ public class StatusEffects : MonoBehaviour
         frozenImg.gameObject.SetActive(false);
     }
 
-    IEnumerator UpdateEffectImg(Image image, float length)
+    IEnumerator BurningEffectImg(Image image, float length)
     {
         if(image.IsActive())
+        {
+            for (int i = 0; i < length; i++)
+            {
+                if (image.IsActive())
+                {
+                    image.fillAmount -= (1 / length);
+                    yield return new WaitForSeconds(1);
+                }
+                else
+                    break;
+            }
+            image.fillAmount = 1;
+        }
+    }
+
+    IEnumerator SlowedEffectImg(Image image, float length)
+    {
+        if (image.IsActive())
+        {
+            for (int i = 0; i < length; i++)
+            {
+                if (image.IsActive())
+                {
+                    image.fillAmount -= (1 / length);
+                    yield return new WaitForSeconds(1);
+                }
+                else
+                    break;
+            }
+            image.fillAmount = 1;
+        }
+    }
+
+    IEnumerator StunnedEffectImg(Image image, float length)
+    {
+        if (image.IsActive())
+        {
+            for (int i = 0; i < length; i++)
+            {
+                if (image.IsActive())
+                {
+                    image.fillAmount -= (1 / length);
+                    yield return new WaitForSeconds(1);
+                }
+                else
+                    break;
+            }
+            image.fillAmount = 1;
+        }
+    }
+
+    IEnumerator KnockedDownEffectImg(Image image, float length)
+    {
+        if (image.IsActive())
+        {
+            for (int i = 0; i < length; i++)
+            {
+                if (image.IsActive())
+                {
+                    image.fillAmount -= (1 / length);
+                    yield return new WaitForSeconds(1);
+                }
+                else
+                    break;
+            }
+            image.fillAmount = 1;
+        }
+    }
+
+    IEnumerator RootedEffectImg(Image image, float length)
+    {
+        if (image.IsActive())
+        {
+            for (int i = 0; i < length; i++)
+            {
+                if (image.IsActive())
+                {
+                    image.fillAmount -= (1 / length);
+                    yield return new WaitForSeconds(1);
+                }
+                else
+                    break;
+            }
+            image.fillAmount = 1;
+        }
+    }
+
+    IEnumerator FrozenEffectImg(Image image, float length)
+    {
+        if (image.IsActive())
+        {
+            for (int i = 0; i < length; i++)
+            {
+                if (image.IsActive())
+                {
+                    image.fillAmount -= (1 / length);
+                    yield return new WaitForSeconds(1);
+                }
+                else
+                    break;
+            }
+            image.fillAmount = 1;
+        }
+    }
+
+    IEnumerator BleedingEffectImg(Image image, float length)
+    {
+        if (image.IsActive())
         {
             for (int i = 0; i < length; i++)
             {
@@ -119,29 +227,29 @@ public class StatusEffects : MonoBehaviour
     /// </summary>
     /// <param name="damage"></param>
     /// <param name="slowPercent">This is in percentages from 0 to 10. 0 = 0%, 5 = 50%, 10 = 100%. If you are not apply a slow effect just put this to 0.</param>
-    public void ApplyEffect(float damage, float slowPercent)
+    public void ApplyEffect()
     {
         if(isBurning)
         {
             if(burning != null)
             {
                 StopCoroutine(burning);
-                burning = StartCoroutine(Burning(damage));
+                burning = StartCoroutine(Burning(5));
             }
             else
-                burning = StartCoroutine(Burning(damage));
+                burning = StartCoroutine(Burning(5));
         }
-        else if(isSlowed)
+        if(isSlowed)
         {
             if (slowed != null)
             {
                 StopCoroutine(slowed);
-                slowed = StartCoroutine(Slowed(slowPercent));
+                slowed = StartCoroutine(Slowed(5));
             }
             else
-                slowed = StartCoroutine(Slowed(slowPercent));
+                slowed = StartCoroutine(Slowed(5));
         }
-        else if (isStunned)
+        if (isStunned)
         {
             statusEffectActive = true;
             if (stunned != null)
@@ -152,7 +260,7 @@ public class StatusEffects : MonoBehaviour
             else
                 stunned = StartCoroutine(Stunned());
         }
-        else if (isKnockedDown)
+        if (isKnockedDown)
         {
             statusEffectActive = true;
             if (knockedDown != null)
@@ -163,7 +271,7 @@ public class StatusEffects : MonoBehaviour
             else
                 knockedDown = StartCoroutine(KnockedDown());
         }
-        else if (isRooted)
+        if (isRooted)
         {
             statusEffectActive = true;
             if (rooted != null)
@@ -174,7 +282,7 @@ public class StatusEffects : MonoBehaviour
             else
                 rooted = StartCoroutine(Rooted());
         }
-        else if (isFrozen)
+        if (isFrozen)
         {
             statusEffectActive = true;
             if (frozen != null)
@@ -185,22 +293,22 @@ public class StatusEffects : MonoBehaviour
             else
                 frozen = StartCoroutine(Frozen());
         }
-        else if (isBleeding)
+        if (isBleeding)
         {
             if (bleeding != null)
             {
                 StopCoroutine(bleeding);
-                bleeding = StartCoroutine(Bleeding(damage));
+                bleeding = StartCoroutine(Bleeding(5));
             }
             else
-                bleeding = StartCoroutine(Bleeding(damage));
+                bleeding = StartCoroutine(Bleeding(5));
         }
     }
 
     IEnumerator Burning(float damage)
     {
         burnImg.gameObject.SetActive(true);
-        StartCoroutine(UpdateEffectImg(burnImg, burnLength));
+        StartCoroutine(BurningEffectImg(burnImg, burnLength));
 
         for(int i = 0; i < burnLength; i++)
         {
@@ -209,24 +317,26 @@ public class StatusEffects : MonoBehaviour
         }
         isBurning = false;
         burnImg.gameObject.SetActive(false);
+        statusEffectActive = false;
     }
 
     IEnumerator Slowed(float slowAmt)
     {
         slowedImg.gameObject.SetActive(true);
-        StartCoroutine(UpdateEffectImg(slowedImg, slowedLength));
+        StartCoroutine(SlowedEffectImg(slowedImg, slowedLength));
 
         movement.speed = movement.baseSpeed / slowAmt;
         yield return new WaitForSeconds(slowedLength);
         movement.speed = movement.baseSpeed;
         isSlowed = false;
         slowedImg.gameObject.SetActive(false);
+        statusEffectActive = false;
     }
 
     IEnumerator Stunned()
     {
         stunnedImg.gameObject.SetActive(true);
-        StartCoroutine(UpdateEffectImg(stunnedImg, stunnedLength));
+        StartCoroutine(StunnedEffectImg(stunnedImg, stunnedLength));
 
         Movement.unableToAct = true;
         anim.SetBool("Stunned", true);
@@ -235,12 +345,13 @@ public class StatusEffects : MonoBehaviour
         Movement.unableToAct = false;
         isStunned = false;
         stunnedImg.gameObject.SetActive(false);
+        statusEffectActive = false;
     }
 
     IEnumerator KnockedDown()
     {
         knockedDownImg.gameObject.SetActive(true);
-        StartCoroutine(UpdateEffectImg(knockedDownImg, knockedDownLength));
+        StartCoroutine(KnockedDownEffectImg(knockedDownImg, knockedDownLength));
 
         Movement.unableToAct = true;
         anim.SetBool("KnockedDown", true);
@@ -249,36 +360,39 @@ public class StatusEffects : MonoBehaviour
         Movement.unableToAct = false;
         isKnockedDown = false;
         knockedDownImg.gameObject.SetActive(false);
+        statusEffectActive = false;
     }
 
     IEnumerator Rooted()
     {
         rootedImg.gameObject.SetActive(true);
-        StartCoroutine(UpdateEffectImg(rootedImg, rootedLength));
+        StartCoroutine(RootedEffectImg(rootedImg, rootedLength));
 
         Movement.unableToAct = true;
         yield return new WaitForSeconds(rootedLength);
         Movement.unableToAct = false;
         isRooted = false;
         rootedImg.gameObject.SetActive(false);
+        statusEffectActive = false;
     }
 
     IEnumerator Frozen()
     {
         frozenImg.gameObject.SetActive(true);
-        StartCoroutine(UpdateEffectImg(frozenImg, frozenLength));
+        StartCoroutine(FrozenEffectImg(frozenImg, frozenLength));
 
         Movement.unableToAct = true;
         yield return new WaitForSeconds(frozenLength);
         Movement.unableToAct = false;
         isFrozen = false;
         frozenImg.gameObject.SetActive(false);
+        statusEffectActive = false;
     }
 
     IEnumerator Bleeding(float damage)
     {
         bleedingImg.gameObject.SetActive(true);
-        StartCoroutine(UpdateEffectImg(bleedingImg, bleedLength));
+        StartCoroutine(BleedingEffectImg(bleedingImg, bleedLength));
 
         for (int i = 0; i < bleedLength; i++)
         {
@@ -287,5 +401,6 @@ public class StatusEffects : MonoBehaviour
         }
         isBleeding = false;
         bleedingImg.gameObject.SetActive(false);
+        statusEffectActive = false;
     }
 }

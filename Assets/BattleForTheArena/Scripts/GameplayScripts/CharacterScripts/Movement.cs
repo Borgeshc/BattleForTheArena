@@ -12,6 +12,7 @@ public class Movement : MonoBehaviour
     public float dodgeSpeed;
     public float dodgeDistance;
     public float dodgeStamConsumption;
+    public float limitBreakerCooldown;
 
     public static bool moving;
     public static bool canMove;
@@ -19,6 +20,7 @@ public class Movement : MonoBehaviour
 
     Image staminaBar;
     Image recoverBar;
+    Image limitBreakerBar;
 
     bool sprinting;
 
@@ -37,6 +39,8 @@ public class Movement : MonoBehaviour
     bool recovering;
     bool storingStam;
     float stamAmount;
+    Coroutine recover;
+    bool limitBreakerAvailible;
 
     void Start ()
     {
@@ -45,8 +49,10 @@ public class Movement : MonoBehaviour
         canMove = true;
         staminaBar = GameObject.Find("PlayerStamina").GetComponent<Image>();
         recoverBar = GameObject.Find("RecoverBar").GetComponent<Image>();
+        limitBreakerBar = GameObject.Find("LimitBreaker").GetComponent<Image>();
         speed = baseSpeed;
         unableToAct = false;
+        limitBreakerAvailible = true;
         statusEffects = GetComponent<StatusEffects>();
 	}
 
@@ -58,28 +64,45 @@ public class Movement : MonoBehaviour
         vertical = inputDevice.LeftStick.Y;
 
         direction = new Vector3(horizontal, 0, vertical);
-        if(StatusEffects.statusEffectActive)
+        if (StatusEffects.statusEffectActive)
         {
+            if (inputDevice.RightBumper.WasPressed && limitBreakerAvailible)
+            {
+                limitBreakerBar.fillAmount = 0;
+                limitBreakerAvailible = false;
+                anim.SetTrigger("LimitBreaker");
+                StartCoroutine(LimitBreakerCooldown());
+                statusEffects.StopCoroutines();
+                if (recover != null)
+                {
+                    StopCoroutine(recover);
+                    storingStam = false;
+                    recovering = false;
+                }
+            }
             if (!recoverBar.IsActive())
             {
                 recoverBar.gameObject.SetActive(true);
                 recoverBar.fillAmount = 1;
             }
 
-            if(inputDevice.Action1 && !recovering)
+            if (inputDevice.Action1 && !recovering)
             {
                 recovering = true;
-                StartCoroutine(Recover());
+                recover = StartCoroutine(Recover());
             }
         }
-        else
+        else if(!StatusEffects.statusEffectActive)
         {
-            if(recoverBar.IsActive())
-            recoverBar.gameObject.SetActive(false);
+            if (recoverBar.IsActive())
+                recoverBar.gameObject.SetActive(false);
         }
 
-        if(!unableToAct)
+        if (!unableToAct)
         {
+            if(anim.GetBool("Frozen"))
+            anim.SetBool("Frozen", false);
+
             if (canMove)
             {
                 if (direction != Vector3.zero)
@@ -178,7 +201,11 @@ public class Movement : MonoBehaviour
                     Block.canBlock = true;
                 }
             }
-
+        }
+        else
+        {
+            if(StatusEffects.isFrozen || StatusEffects.isRooted)
+            anim.SetBool("Frozen", true);
         }
     }
 
@@ -220,5 +247,15 @@ public class Movement : MonoBehaviour
 
         yield return new WaitForSeconds(.1f);
         recovering = false;
+    }
+
+    IEnumerator LimitBreakerCooldown()
+    {
+        for(int i = 0; i < limitBreakerCooldown; i++)
+        {
+            limitBreakerBar.fillAmount += 1 / limitBreakerCooldown;
+            yield return new WaitForSeconds(1);
+        }
+        limitBreakerAvailible = true;
     }
 }
