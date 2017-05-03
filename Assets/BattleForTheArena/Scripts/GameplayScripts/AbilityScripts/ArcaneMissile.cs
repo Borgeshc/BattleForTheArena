@@ -21,8 +21,6 @@ public class ArcaneMissile : NetworkBehaviour
 
     public SpawnRotation spawnRotation = SpawnRotation.ForwardRotation;
 
-
-
     public enum KeyBind
     {
         RightTrigger,
@@ -33,6 +31,7 @@ public class ArcaneMissile : NetworkBehaviour
 
     public KeyBind keyBind = KeyBind.RightTrigger;
 
+    AnimatorOverrideController animatorOverrideController;
     Animator anim;
 
     void OnEnable()
@@ -80,6 +79,9 @@ public class ArcaneMissile : NetworkBehaviour
     void Start()
     {
         anim = GetComponent<Animator>();
+
+        animatorOverrideController = new AnimatorOverrideController(anim.runtimeAnimatorController);
+
         readyToFire = true;
         CmdInitOnServer();
     }
